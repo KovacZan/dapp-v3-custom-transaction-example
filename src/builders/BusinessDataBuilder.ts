@@ -1,13 +1,13 @@
 import { Transactions, Utils, Interfaces } from "@arkecosystem/crypto";
 import { BusinessDataTransaction } from "../transactions";
-import { BusinessDataType, BusinessDataTypeGroup } from "../constants";
+import { BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
 
 
 export class BusinessDataBuilder extends Transactions.TransactionBuilder<BusinessDataBuilder> {
     public constructor() {
         super();
-        this.data.version = 2;
+        this.data.version = TransactionVersion;
         this.data.typeGroup = BusinessDataTypeGroup;
         this.data.type = BusinessDataType;
         this.data.fee = BusinessDataTransaction.staticFee();
@@ -16,9 +16,11 @@ export class BusinessDataBuilder extends Transactions.TransactionBuilder<Busines
     }
 
     public businessDataAsset(businessData: IBusinessData): BusinessDataBuilder{
-        this.data.asset = {
-            ...businessData
-        };
+        if (this.data.asset && this.data.asset.businessData) {
+            this.data.asset.businessData = {
+                ...businessData
+            };
+        }
         return this;
     }
 

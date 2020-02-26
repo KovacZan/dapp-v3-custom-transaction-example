@@ -6,4 +6,4 @@ export const BusinessDataType = 0;
 
 export const BusinessDataStaticFee: Utils.BigNumber = Utils.BigNumber.make("10000000");
 
-export const TransactionVersion = 1;
+export const TransactionVersion = 2;
