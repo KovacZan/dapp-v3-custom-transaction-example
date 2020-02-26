@@ -1,6 +1,6 @@
 import { Transactions, Utils} from "@arkecosystem/crypto";
 import { Utils as AppUtils } from "@arkecosystem/core-kernel";
-import { BusinessDataStaticFee, BusinessDataType, BusinessDataTypeGroup } from "../constants";
+import { BusinessDataStaticFee, BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
 import ByteBuffer from "bytebuffer";
 
@@ -8,9 +8,12 @@ const { schemas } = Transactions;
 
 export class BusinessDataTransaction extends Transactions.Transaction{
     public static typeGroup: number = BusinessDataTypeGroup;
+
     public static type: number = BusinessDataType;
+
     public static key: string = "businessData";
-    public static version: number = 2;
+
+    public static version: number = TransactionVersion;
 
     protected static defaultStaticFee: Utils.BigNumber = BusinessDataStaticFee;
 
