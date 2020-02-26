@@ -1,5 +1,8 @@
-import { Transactions, Utils } from "@arkecosystem/crypto";
+import { Transactions, Utils} from "@arkecosystem/crypto";
+import { Utils as AppUtils } from "@arkecosystem/core-kernel";
 import { BusinessDataStaticFee, BusinessDataType, BusinessDataTypeGroup } from "../constants";
+import { IBusinessData } from "../interfaces";
+import ByteBuffer from "bytebuffer";
 
 const { schemas } = Transactions;
 
@@ -41,11 +44,48 @@ export class BusinessDataTransaction extends Transactions.Transaction{
         });
     }
 
-    public serialize(): ByteBuffer | undefined {
-        return undefined;
+    public serialize(): ByteBuffer{
+        const { data } = this;
+
+        AppUtils.assert.defined<IBusinessData>(data.asset?.businessData);
+
+        const businessData: IBusinessData = data.asset.businessData;
+
+        const businessName: Buffer = Buffer.from(businessData.name, "utf8");
+        const businessWebsite: Buffer = Buffer.from(businessData.website, "utf8");
+
+        const buffer: ByteBuffer = new ByteBuffer(
+            businessName.length + businessWebsite.length + 2,
+            true,
+        );
+
+        buffer.writeByte(businessName.length);
+        buffer.append(businessName, "hex");
+
+        buffer.writeByte(businessWebsite.length);
+        buffer.append(businessWebsite, "hex");
+
+        return buffer;
     }
 
     public deserialize(buf: ByteBuffer): void {
+        const { data } = this;
+
+        const nameLength: number = buf.readUint8();
+        const name: string = buf.readString(nameLength);
+
+        const websiteLength: number = buf.readUint8();
+        const website: string = buf.readString(websiteLength);
+
+        const businessData: IBusinessData = {
+            name,
+            website,
+        };
+
+        data.asset = {
+            businessData,
+        };
+
     }
 
 }
