@@ -4,7 +4,7 @@ import { Managers, Transactions } from "@arkecosystem/crypto";
 import { BusinessDataTransaction } from "../src/transactions";
 import { BusinessDataBuilder } from "../src/builders";
 
-describe("Test builder",()=>{
+describe("Test builder", () => {
     it("should verify correctly", () => {
         Managers.configManager.setFromPreset("testnet");
         Transactions.TransactionRegistry.registerTransactionType(BusinessDataTransaction);
@@ -12,7 +12,7 @@ describe("Test builder",()=>{
         const actual = new BusinessDataBuilder()
             .businessDataAsset({
                 name: "google",
-                website: "https://google.com"
+                website: "https://google.com",
             })
             .nonce("3")
             .sign("clay harbor enemy utility margin pretty hub comic piece aerobic umbrella acquire");
