@@ -41,11 +41,11 @@ export class BusinessDataTransaction extends Transactions.Transaction{
         });
     }
 
-    public deserialize(buf: ByteBuffer): void {
-    }
-
     public serialize(): ByteBuffer | undefined {
         return undefined;
+    }
+
+    public deserialize(buf: ByteBuffer): void {
     }
 
 }
