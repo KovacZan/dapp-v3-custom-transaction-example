@@ -3,7 +3,6 @@ import { BusinessDataTransaction } from "../transactions";
 import { BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
 
-
 export class BusinessDataBuilder extends Transactions.TransactionBuilder<BusinessDataBuilder> {
     public constructor() {
         super();
@@ -15,10 +14,10 @@ export class BusinessDataBuilder extends Transactions.TransactionBuilder<Busines
         this.data.asset = { businessData: {} };
     }
 
-    public businessDataAsset(businessData: IBusinessData): BusinessDataBuilder{
+    public businessDataAsset(businessData: IBusinessData): BusinessDataBuilder {
         if (this.data.asset && this.data.asset.businessData) {
             this.data.asset.businessData = {
-                ...businessData
+                ...businessData,
             };
         }
         return this;
@@ -34,5 +33,4 @@ export class BusinessDataBuilder extends Transactions.TransactionBuilder<Busines
     protected instance(): BusinessDataBuilder {
         return this;
     }
-
 }

@@ -8,7 +8,7 @@ import { BusinessAlreadyHasData } from "../errors";
 import { BusinessData } from "../events";
 
 @Container.injectable()
-export class BusinessDataHandler extends Handlers.TransactionHandler{
+export class BusinessDataHandler extends Handlers.TransactionHandler {
     @Container.inject(Container.Identifiers.TransactionPoolQuery)
     private readonly poolQuery!: Contracts.TransactionPool.Query;
 
@@ -16,7 +16,7 @@ export class BusinessDataHandler extends Handlers.TransactionHandler{
         return [];
     }
 
-    public getConstructor(): Transactions.TransactionConstructor  {
+    public getConstructor(): Transactions.TransactionConstructor {
         return BusinessDataTransaction;
     }
 
@@ -41,10 +41,12 @@ export class BusinessDataHandler extends Handlers.TransactionHandler{
         }
     }
 
-    public async throwIfCannotBeApplied(transaction: Interfaces.ITransaction,
-                           sender: Contracts.State. Wallet,
-                           customWalletRepository?: Contracts.State.WalletRepository): Promise<void> {
-        if (sender.hasAttribute("businessData")){
+    public async throwIfCannotBeApplied(
+        transaction: Interfaces.ITransaction,
+        sender: Contracts.State.Wallet,
+        customWalletRepository?: Contracts.State.WalletRepository,
+    ): Promise<void> {
+        if (sender.hasAttribute("businessData")) {
             throw new BusinessAlreadyHasData();
         }
         return super.throwIfCannotBeApplied(transaction, sender, customWalletRepository);
@@ -83,14 +85,11 @@ export class BusinessDataHandler extends Handlers.TransactionHandler{
 
         const sender: Contracts.State.Wallet = walletRepository.findByPublicKey(transaction.data.senderPublicKey);
 
-        AppUtils.assert.defined<IBusinessData>(
-            transaction.data.asset?.businessData,
-        );
+        AppUtils.assert.defined<IBusinessData>(transaction.data.asset?.businessData);
 
         sender.setAttribute<IBusinessData>("businessData", {
             ...transaction.data.asset.businessRegistration,
         });
-
     }
 
     public async revertForSender(
@@ -106,7 +105,6 @@ export class BusinessDataHandler extends Handlers.TransactionHandler{
         const sender: Contracts.State.Wallet = walletRepository.findByPublicKey(transaction.data.senderPublicKey);
 
         sender.forgetAttribute("businessData");
-
     }
 
     public async applyToRecipient(

@@ -1,4 +1,4 @@
-import { Transactions, Utils} from "@arkecosystem/crypto";
+import { Transactions, Utils } from "@arkecosystem/crypto";
 import { Utils as AppUtils } from "@arkecosystem/core-kernel";
 import { BusinessDataStaticFee, BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
@@ -6,7 +6,7 @@ import ByteBuffer from "bytebuffer";
 
 const { schemas } = Transactions;
 
-export class BusinessDataTransaction extends Transactions.Transaction{
+export class BusinessDataTransaction extends Transactions.Transaction {
     public static typeGroup: number = BusinessDataTypeGroup;
 
     public static type: number = BusinessDataType;
@@ -38,8 +38,8 @@ export class BusinessDataTransaction extends Transactions.Transaction{
                                 },
                                 website: {
                                     $ref: "uri",
-                                }
-                            }
+                                },
+                            },
                         },
                     },
                 },
@@ -47,7 +47,7 @@ export class BusinessDataTransaction extends Transactions.Transaction{
         });
     }
 
-    public serialize(): ByteBuffer{
+    public serialize(): ByteBuffer {
         const { data } = this;
 
         AppUtils.assert.defined<IBusinessData>(data.asset?.businessData);
@@ -57,10 +57,7 @@ export class BusinessDataTransaction extends Transactions.Transaction{
         const businessName: Buffer = Buffer.from(businessData.name, "utf8");
         const businessWebsite: Buffer = Buffer.from(businessData.website, "utf8");
 
-        const buffer: ByteBuffer = new ByteBuffer(
-            businessName.length + businessWebsite.length + 2,
-            true,
-        );
+        const buffer: ByteBuffer = new ByteBuffer(businessName.length + businessWebsite.length + 2, true);
 
         buffer.writeByte(businessName.length);
         buffer.append(businessName, "hex");
@@ -88,7 +85,5 @@ export class BusinessDataTransaction extends Transactions.Transaction{
         data.asset = {
             businessData,
         };
-
     }
-
 }
