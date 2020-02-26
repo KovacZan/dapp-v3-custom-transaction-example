@@ -6,9 +6,6 @@ import { Models } from "@arkecosystem/core-database";
 import { IBusinessData } from "../interfaces";
 import { BusinessAlreadyHasData } from "../errors";
 import { BusinessData } from "../events";
-import { Interfaces as MagistrateInterfaces } from "@packages/core-magistrate-crypto";
-import { IBusinessWalletAttributes } from "@packages/core-magistrate-transactions/src/interfaces";
-import { MagistrateIndex } from "@packages/core-magistrate-transactions/src/wallet-indexes";
 
 @Container.injectable()
 export class BusinessDataHandler extends Handlers.TransactionHandler{
