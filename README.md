@@ -148,3 +148,42 @@ You should receive a response similar to this:
 	}
 }
 ```
+
+## Use Block Explorer To View Local Running Testnet
+
+The following code instructions will run a local copy of ARK Explorer and connect to local node.
+
+```bash
+git clone https://github.com/arkecosystem/explorer
+cd explorer
+
+yarn install
+
+yarn serve:testnet
+```
+
+
+After running `yarn serve:testnet` you should see the following:
+
+```bash
+DONE  Compiled successfully in 11030ms                                                                                                        11:07:14 AM
+
+No type errors found
+Version: typescript 3.6.3
+Time: 6973ms
+
+  App running at:
+  - Local:   http://localhost:8080/
+  - Network: http://192.168.0.178:8080/
+
+  Note that the development build is not optimized.
+  To create a production build, run yarn build.
+```
+Head over to http://localhost:8080/ to view contents of local running blockchain with Testnet environment setup.
+
+---
+
+Congrats, your dapp is loaded. Now look at the resources below to understand more about our dapp development.
+
+-   [Introduction To Custom Transactions](https://blog.ark.io/an-introduction-to-blockchain-application-development-part-2-2-909b4984bae)
+-   [Learn Development With ARK](https://learn.ark.dev)
