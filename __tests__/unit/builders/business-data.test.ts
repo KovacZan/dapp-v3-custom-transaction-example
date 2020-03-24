@@ -1,12 +1,14 @@
 import "jest-extended";
 
 import { Managers, Transactions } from "@arkecosystem/crypto";
-import { BusinessDataTransaction } from "../src/transactions";
-import { BusinessDataBuilder } from "../src/builders";
+
+import { BusinessDataBuilder } from "../../../src/builders";
+import { BusinessDataTransaction } from "../../../src/transactions";
 
 describe("Test builder", () => {
     it("should verify correctly", () => {
         Managers.configManager.setFromPreset("testnet");
+        Managers.configManager.setHeight(2);
         Transactions.TransactionRegistry.registerTransactionType(BusinessDataTransaction);
 
         const actual = new BusinessDataBuilder()

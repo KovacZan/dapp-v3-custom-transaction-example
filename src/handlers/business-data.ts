@@ -88,7 +88,7 @@ export class BusinessDataHandler extends Handlers.TransactionHandler {
         AppUtils.assert.defined<IBusinessData>(transaction.data.asset?.businessData);
 
         sender.setAttribute<IBusinessData>("businessData", {
-            ...transaction.data.asset.businessRegistration,
+            ...transaction.data.asset.businessData,
         });
     }
 
