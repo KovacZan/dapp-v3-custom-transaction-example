@@ -1,0 +1,43 @@
+name: Test
+
+on:
+    - push
+
+jobs:
+    unit-tests:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [12.x]
+
+        steps:
+            - name: Download core
+                uses: actions/checkout@v2
+                    with:
+                        repository: ArkEcosystem/core
+                        ref: master
+
+            - name: Download plugin
+                uses: actions/checkout@v2
+                    with:
+                        path: plugins/dapp-v3-custom-transaction-example
+
+            - name: Use Node.js ${{ matrix.node-version }}
+                uses: actions/setup-node@v1
+                with:
+                    node-version: ${{ matrix.node-version }}
+
+            - name: Setup core
+                run: yarn setup
+
+            - name: Move to plugin directory
+                run: cd plugins/dapp-v3-custom-transaction-example
+
+            - name: Run unit tests
+                run: yarn test:unit
+
+
+
+
+
