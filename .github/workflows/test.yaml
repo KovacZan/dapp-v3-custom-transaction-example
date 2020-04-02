@@ -31,6 +31,9 @@ jobs:
             - name: Move back to core directory
               run: cd ../..
 
+            - name: Working directory
+              run: pwd
+
             - name: Setup core
               run: yarn setup
 
