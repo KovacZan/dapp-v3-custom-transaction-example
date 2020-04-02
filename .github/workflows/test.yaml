@@ -28,8 +28,8 @@ jobs:
               with:
                     node-version: ${{ matrix.node-version }}
 
-            - name: Print working directory
-              run: pwd
+            - name: Move back to core directory
+              run: cd ../..
 
             - name: Setup core
               run: yarn setup
