@@ -13,15 +13,15 @@ jobs:
 
         steps:
             - name: Download core
-                uses: actions/checkout@v2
-                    with:
-                        repository: ArkEcosystem/core
-                        ref: master
+            uses: actions/checkout@v2
+                with:
+                    repository: ArkEcosystem/core
+                    ref: master
 
             - name: Download plugin
-                uses: actions/checkout@v2
-                    with:
-                        path: plugins/dapp-v3-custom-transaction-example
+            uses: actions/checkout@v2
+                with:
+                    path: plugins/dapp-v3-custom-transaction-example
 
             - name: Use Node.js ${{ matrix.node-version }}
                 uses: actions/setup-node@v1
@@ -29,13 +29,13 @@ jobs:
                     node-version: ${{ matrix.node-version }}
 
             - name: Setup core
-                run: yarn setup
+            run: yarn setup
 
             - name: Move to plugin directory
-                run: cd plugins/dapp-v3-custom-transaction-example
+            run: cd plugins/dapp-v3-custom-transaction-example
 
             - name: Run unit tests
-                run: yarn test:unit
+            run: yarn test:unit
 
 
 
