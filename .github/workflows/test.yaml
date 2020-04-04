@@ -21,7 +21,7 @@ jobs:
             - name: Download plugin
               uses: actions/checkout@v2
               with:
-                    path: plugins/dapp-v3-custom-transaction-example
+                    path: plugins
 
             - name: print
               run: |
