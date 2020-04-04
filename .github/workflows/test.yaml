@@ -23,20 +23,13 @@ jobs:
               with:
                     path: plugins/dapp-v3-custom-transaction-example
 
-            - name: print
-              run: |
-                cd plugins
-                pwd
-                ls -a
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                    node-version: ${{ matrix.node-version }}
 
-
-#            - name: Use Node.js ${{ matrix.node-version }}
-#              uses: actions/setup-node@v1
-#              with:
-#                    node-version: ${{ matrix.node-version }}
-#
-#            - name: Move back to core directory
-#              run: cd ../..
+            - name: Move back to core directory
+              run: cd ../..
 
 #            - name: Setup core
 #              run: cd vagrant && bash bootstrap.sh
@@ -44,9 +37,9 @@ jobs:
 #            - name: Move back to core directory
 #              run: cd ..
 #
-#            - name: Setup core
-#              run: yarn setup
-#
+            - name: Setup core
+              run: yarn setup
+
 #            - name: Move to plugin directory
 #              run: cd plugins/dapp-v3-custom-transaction-example
 #
