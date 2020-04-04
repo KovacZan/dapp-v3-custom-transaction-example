@@ -44,7 +44,7 @@ jobs:
 #              run: cd ..
 #
             - name: Setup core
-              run: yarn setuo
+              run: yarn setup
 
             - name: Move to plugin directory
               run: cd plugins/dapp-v3-custom-transaction-example
