@@ -21,7 +21,7 @@ jobs:
             - name: Download plugin
               uses: actions/checkout@v2
               with:
-                    path: plugins/dapp-v3-custom-transaction-example
+                    path: packages/dapp-v3-custom-transaction-example
 
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v1
