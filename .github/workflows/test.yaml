@@ -31,8 +31,8 @@ jobs:
             - name: Move back to core directory
               run: cd ../..
 
-#            - name: Setup core
-#              run: cd vagrant && bash bootstrap.sh
+            - name: Setup core
+              run: cd vagrant && bash bootstrap.sh
 
             - name: Move back to core directory
               run: cd ..
