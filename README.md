@@ -3,7 +3,7 @@
 
 This is a basic example of Ark dApp development, by using our CustomTransaction approach with GTI and modular approach.
 
-> This Example is currently operational only on our `core/3.0` branch!
+> This Example is currently operational only on our `core/develop` branch!
 
 This dApp enables a new transaction type on the ARK Core blockchain. New transaction types follows existing blockchain protocol.
 
@@ -27,7 +27,7 @@ Registered Transaction is fully compatible with existing [API (api/transactions/
 ```bash
 git clone https://github.com/arkecosystem/core
 cd core
-git checkout 3.0
+git checkout develop
 ```
 
 ### STEP 2: Setup Development Docker Database
@@ -43,7 +43,7 @@ or follow the steps in the following link: https://learn.ark.dev/core-getting-st
 ### STEP 3: Checkout This dApp Project As a GitSubmodule
 ```bash
 cd plugins/ #location for loading of custom non-core dApps
-git submodule add -f https://github.com/KovacZan/custom-transaction-core-v3
+git submodule add -f https://github.com/learn-ark/custom-transaction-core-v3
 ```
 
 
@@ -111,25 +111,25 @@ curl --request POST \
   --data '{
                 "transactions":
                 [
-    			{
-				"version":2,
-				"network":23,
-				"typeGroup":1001,
-				"type": 0,
-				"nonce":"3",
-				"senderPublicKey":
-				"03287bfebba4c7881a0509717e71b34b63f31e40021c321f89ae04f84be6d6ac37",
-				"fee":"10000000",
-				"amount":"0",
-				"asset":{
-					"businessData":
-					{"name":"google","website":"https://google.com"}
-				},
-				"signature":
-				"5b8e412da6103bf6e8ee04771803495f4e1e65e38ef13e5618053fddca75c0a90c1ed515124c20f7bcba64fc38496754930f80e3bb85c9b206016960375e97c7",
-				"id":
-				"6dd8a22571acab801214f87dda9734f7050705d64d9c4ef9b24bb4d2ce489691"
-			}
+    	          
+    	          {
+    	            "version":2,
+    	            "network":23,
+    	            "typeGroup":1001,
+    	            "type":0,
+    	            "nonce":"3",
+    	            "senderPublicKey":"03287bfebba4c7881a0509717e71b34b63f31e40021c321f89ae04f84be6d6ac37",
+    	            "fee":"10000000",
+    	            "amount":"0",
+    	            "asset":{
+    	              "businessData":{
+    	                  "name":"google",
+    	                  "website":"https://google.com"
+    	              }
+    	            },
+    	            "signature":"5b8e412da6103bf6e8ee04771803495f4e1e65e38ef13e5618053fddca75c0a90c1ed515124c20f7bcba64fc38496754930f80e3bb85c9b206016960375e97c7",
+    	            "id":"6dd8a22571acab801214f87dda9734f7050705d64d9c4ef9b24bb4d2ce489691"
+    	          }
 
                 ]
         }'

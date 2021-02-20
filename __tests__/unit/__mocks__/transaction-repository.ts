@@ -1,18 +1,24 @@
-import { SearchFilter } from "@arkecosystem/core-database/src/repositories/search";
-import { ITransaction } from "@arkecosystem/crypto/src/interfaces";
+import { Interfaces } from "@arkecosystem/crypto";
 
-let mockTransaction: ITransaction | null;
-let mockTransactions: [ITransaction];
+let mockTransaction: Interfaces.ITransaction | null;
+let mockTransactions: Interfaces.ITransaction[] = [];
 
-export const setMockTransaction = (transaction: ITransaction | null) => {
+export const setMockTransaction = (transaction: Interfaces.ITransaction | null) => {
     mockTransaction = transaction;
 };
 
-export const setMockTransactions = (transactions: [ITransaction]) => {
+export const setMockTransactions = (transactions: Interfaces.ITransaction[]) => {
     mockTransactions = transactions;
 };
 
 export const transactionRepository = {
+    findById(id: string): any {
+        if (mockTransactions !== null && mockTransactions.length === 0) {
+            return mockTransaction?.data;
+        }
+        const trx = mockTransactions.find((trx) => trx.data.id === id);
+        return trx?.data;
+    },
     findByIds: async () => {
         return mockTransaction ? [mockTransaction.data] : [];
     },
@@ -34,12 +40,5 @@ export const transactionRepository = {
         return mockTransaction
             ? [{ amount: mockTransaction.data.amount, senderPublicKey: mockTransaction.data.senderPublicKey }]
             : [];
-    },
-    search(filter: SearchFilter): any {
-        const type = filter.criteria.find(x => x.field === "type");
-        return {
-            // @ts-ignore
-            rows: mockTransactions.filter(x => x.data.type === type.value).map(x => x.data),
-        };
     },
 };

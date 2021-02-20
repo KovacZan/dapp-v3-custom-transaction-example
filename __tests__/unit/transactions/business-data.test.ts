@@ -23,8 +23,7 @@ describe("Test builder", () => {
         const serialized = Transactions.TransactionFactory.fromData(actual).serialized.toString("hex");
         const deserialized = Transactions.Deserializer.deserialize(serialized);
 
-        // @ts-ignore
-        expect(deserialized.data.asset.businessData).toStrictEqual({
+        expect(deserialized.data.asset!.businessData).toStrictEqual({
             name: "google",
             website: "https://google.com",
         });

@@ -1,1 +1,1 @@
-export * from "./business-data"
+export * from "./business-data";

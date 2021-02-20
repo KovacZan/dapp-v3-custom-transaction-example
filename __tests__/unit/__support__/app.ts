@@ -1,28 +1,22 @@
 import { Application, Container, Contracts, Providers, Services } from "@arkecosystem/core-kernel";
-import { Identifiers } from "@arkecosystem/core-kernel/src/ioc";
-import { NullEventDispatcher } from "@arkecosystem/core-kernel/src/services/events/drivers/null";
-import { Wallets } from "@arkecosystem/core-state";
-import { StateStore } from "@arkecosystem/core-state/src/stores/state";
+import { Stores, Wallets } from "@arkecosystem/core-state";
+import { Generators, Mocks } from "@arkecosystem/core-test-framework";
 import {
-    addressesIndexer,
-    ipfsIndexer,
-    locksIndexer,
-    publicKeysIndexer,
-    usernamesIndexer,
-} from "@arkecosystem/core-state/src/wallets/indexers/indexers";
-import { Collator } from "@arkecosystem/core-transaction-pool/src";
-import { DynamicFeeMatcher } from "@arkecosystem/core-transaction-pool/src/dynamic-fee-matcher";
-import { ExpirationService } from "@arkecosystem/core-transaction-pool/src/expiration-service";
-import { Query } from "@arkecosystem/core-transaction-pool/src/query";
-import { SenderState } from "@arkecosystem/core-transaction-pool/src/sender-state";
-import { One, Two } from "@arkecosystem/core-transactions/src/handlers";
-import { TransactionHandlerProvider } from "@arkecosystem/core-transactions/src/handlers/handler-provider";
-import { TransactionHandlerRegistry } from "@arkecosystem/core-transactions/src/handlers/handler-registry";
-import { Identities, Utils } from "@arkecosystem/crypto";
-import { Mempool } from "@arkecosystem/core-transaction-pool/src/mempool";
+    ApplyTransactionAction,
+    Collator,
+    DynamicFeeMatcher,
+    ExpirationService,
+    Mempool,
+    Query,
+    RevertTransactionAction,
+    SenderMempool,
+    SenderState,
+    ThrowIfCannotEnterPoolAction,
+    VerifyTransactionAction,
+} from "@arkecosystem/core-transaction-pool";
+import { Handlers } from "@arkecosystem/core-transactions";
+import { Identities, Managers, Utils } from "@arkecosystem/crypto";
 
-// eslint-disable-next-line jest/no-mocks-import
-import { blockRepository } from "../__mocks__/block-repository";
 // eslint-disable-next-line jest/no-mocks-import
 import { transactionRepository } from "../__mocks__/transaction-repository";
 
@@ -32,47 +26,43 @@ const logger = {
     warning: jest.fn(),
 };
 
+export const transactionHistoryService = {
+    findManyByCriteria: jest.fn(),
+    findOneByCriteria: jest.fn(),
+    streamByCriteria: jest.fn(),
+};
+
 export const initApp = (): Application => {
+    const config = Generators.generateCryptoConfigRaw();
+    Managers.configManager.setConfig(config);
+
     const app: Application = new Application(new Container.Container());
-    app.bind(Identifiers.ApplicationNamespace).toConstantValue("testnet");
+    app.bind(Container.Identifiers.ApplicationNamespace).toConstantValue("testnet");
 
-    app.bind(Identifiers.LogService).toConstantValue(logger);
+    app.bind(Container.Identifiers.LogService).toConstantValue(logger);
 
-    app.bind<Services.Attributes.AttributeSet>(Identifiers.WalletAttributes)
+    app.bind<Services.Attributes.AttributeSet>(Container.Identifiers.WalletAttributes)
         .to(Services.Attributes.AttributeSet)
         .inSingletonScope();
 
-    app.bind<Contracts.State.WalletIndexerIndex>(Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
+    app.bind<Contracts.State.WalletIndexerIndex>(Container.Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
         name: Contracts.State.WalletIndexes.Addresses,
-        indexer: addressesIndexer,
+        indexer: Wallets.addressesIndexer,
+        autoIndex: true,
     });
 
     app.bind<Contracts.State.WalletIndexerIndex>(Container.Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
         name: Contracts.State.WalletIndexes.PublicKeys,
-        indexer: publicKeysIndexer,
+        indexer: Wallets.publicKeysIndexer,
+        autoIndex: true,
     });
 
-    app.bind<Contracts.State.WalletIndexerIndex>(Container.Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
-        name: Contracts.State.WalletIndexes.Usernames,
-        indexer: usernamesIndexer,
-    });
-
-    app.bind<Contracts.State.WalletIndexerIndex>(Container.Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
-        name: Contracts.State.WalletIndexes.Ipfs,
-        indexer: ipfsIndexer,
-    });
-
-    app.bind<Contracts.State.WalletIndexerIndex>(Container.Identifiers.WalletRepositoryIndexerIndex).toConstantValue({
-        name: Contracts.State.WalletIndexes.Locks,
-        indexer: locksIndexer,
-    });
-
-    app.bind(Identifiers.WalletFactory).toFactory<Contracts.State.Wallet>(
+    app.bind(Container.Identifiers.WalletFactory).toFactory<Contracts.State.Wallet>(
         (context: Container.interfaces.Context) => (address: string) =>
             new Wallets.Wallet(
                 address,
                 new Services.Attributes.AttributeMap(
-                    context.container.get<Services.Attributes.AttributeSet>(Identifiers.WalletAttributes),
+                    context.container.get<Services.Attributes.AttributeSet>(Container.Identifiers.WalletAttributes),
                 ),
             ),
     );
@@ -89,54 +79,86 @@ export const initApp = (): Application => {
         300,
     );
 
-    app.bind(Container.Identifiers.StateStore).to(StateStore).inTransientScope();
+    app.bind(Container.Identifiers.StateStore).to(Stores.StateStore).inTransientScope();
 
-    app.bind(Identifiers.TransactionPoolMempool).to(Mempool).inSingletonScope();
+    app.bind(Container.Identifiers.TransactionPoolMempool).to(Mempool).inSingletonScope();
 
-    app.bind(Identifiers.TransactionPoolQuery).to(Query).inSingletonScope();
+    app.bind(Container.Identifiers.TransactionPoolQuery).to(Query).inSingletonScope();
 
     app.bind(Container.Identifiers.TransactionPoolCollator).to(Collator);
     app.bind(Container.Identifiers.TransactionPoolDynamicFeeMatcher).to(DynamicFeeMatcher);
     app.bind(Container.Identifiers.TransactionPoolExpirationService).to(ExpirationService);
 
-    app.bind(Container.Identifiers.TransactionPoolSenderState).to(SenderState);
+    app.bind(Container.Identifiers.TransactionPoolSenderMempool).to(SenderMempool);
     app.bind(Container.Identifiers.TransactionPoolSenderMempoolFactory).toAutoFactory(
-        Container.Identifiers.TransactionPoolSenderState,
+        Container.Identifiers.TransactionPoolSenderMempool,
+    );
+    app.bind(Container.Identifiers.TransactionPoolSenderState).to(SenderState);
+
+    app.bind(Container.Identifiers.WalletRepository).to(Wallets.WalletRepository).inSingletonScope();
+
+    app.bind(Container.Identifiers.EventDispatcherService).to(Services.Events.NullEventDispatcher).inSingletonScope();
+
+    app.bind(Container.Identifiers.DatabaseBlockRepository).toConstantValue(Mocks.BlockRepository.instance);
+
+    app.bind(Container.Identifiers.DatabaseTransactionRepository).toConstantValue(transactionRepository);
+
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.One.TransferTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.TransferTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.One.SecondSignatureRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.SecondSignatureRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.One.DelegateRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.DelegateRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.One.VoteTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.VoteTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.One.MultiSignatureRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.MultiSignatureRegistrationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.IpfsTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.MultiPaymentTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.DelegateResignationTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.HtlcLockTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.HtlcClaimTransactionHandler);
+    app.bind(Container.Identifiers.TransactionHandler).to(Handlers.Two.HtlcRefundTransactionHandler);
+
+    app.bind(Container.Identifiers.TransactionHandlerProvider)
+        .to(Handlers.TransactionHandlerProvider)
+        .inSingletonScope();
+    app.bind(Container.Identifiers.TransactionHandlerRegistry).to(Handlers.Registry).inSingletonScope();
+
+    app.bind(Container.Identifiers.TriggerService).to(Services.Triggers.Triggers).inSingletonScope();
+
+    app.get<Services.Triggers.Triggers>(Container.Identifiers.TriggerService).bind(
+        "verifyTransaction",
+        new VerifyTransactionAction(),
     );
 
-    app.bind(Identifiers.WalletRepository).to(Wallets.WalletRepository).inSingletonScope();
+    app.get<Services.Triggers.Triggers>(Container.Identifiers.TriggerService).bind(
+        "throwIfCannotEnterPool",
+        new ThrowIfCannotEnterPoolAction(),
+    );
 
-    app.bind(Identifiers.EventDispatcherService).to(NullEventDispatcher).inSingletonScope();
+    app.get<Services.Triggers.Triggers>(Container.Identifiers.TriggerService).bind(
+        "applyTransaction",
+        new ApplyTransactionAction(),
+    );
 
-    app.bind(Identifiers.BlockRepository).toConstantValue(blockRepository);
+    app.get<Services.Triggers.Triggers>(Container.Identifiers.TriggerService).bind(
+        "revertTransaction",
+        new RevertTransactionAction(),
+    );
 
-    app.bind(Identifiers.TransactionRepository).toConstantValue(transactionRepository);
+    transactionHistoryService.findManyByCriteria.mockReset();
+    transactionHistoryService.findOneByCriteria.mockReset();
+    transactionHistoryService.streamByCriteria.mockReset();
+    app.bind(Container.Identifiers.TransactionHistoryService).toConstantValue(transactionHistoryService);
 
-    app.bind(Identifiers.TransactionHandler).to(One.TransferTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.TransferTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(One.SecondSignatureRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.SecondSignatureRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(One.DelegateRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.DelegateRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(One.VoteTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.VoteTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(One.MultiSignatureRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.MultiSignatureRegistrationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.IpfsTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.MultiPaymentTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.DelegateResignationTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.HtlcLockTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.HtlcClaimTransactionHandler);
-    app.bind(Identifiers.TransactionHandler).to(Two.HtlcRefundTransactionHandler);
-
-    app.bind(Identifiers.TransactionHandlerProvider).to(TransactionHandlerProvider).inSingletonScope();
-    app.bind(Identifiers.TransactionHandlerRegistry).to(TransactionHandlerRegistry).inSingletonScope();
+    app.bind(Container.Identifiers.CacheService).to(Services.Cache.MemoryCacheStore).inSingletonScope();
 
     return app;
 };
 
 export const buildWallet = (app: Application, passphrase: string): Contracts.State.Wallet => {
-    const walletRepository = app.get<Wallets.WalletRepository>(Identifiers.WalletRepository);
+    const walletRepository = app.get<Wallets.WalletRepository>(Container.Identifiers.WalletRepository);
 
     const wallet: Contracts.State.Wallet = walletRepository.createWallet(Identities.Address.fromPassphrase(passphrase));
     wallet.address = Identities.Address.fromPassphrase(passphrase);

@@ -1,10 +1,10 @@
 {
-    "name": "custom-transaction-corev3",
-    "version": "3.0.0-next.0",
+    "name": "@learn-ark/custom-transaction-corev3",
+    "version": "1.0.0",
     "description": "ARK custom transaction",
     "license": "MIT",
     "contributors": [
-        "Žan Kovač <zan@ark.io>"
+        "Žan Kovač <zan@protokol.com>"
     ],
     "files": [
         "dist"
@@ -29,27 +29,28 @@
         "updates": "../../node_modules/npm-check-updates/bin/npm-check-updates -a"
     },
     "dependencies": {
-        "@arkecosystem/core-database": "^3.0.0-next.0",
-        "@arkecosystem/core-kernel": "^3.0.0-next.0",
-        "@arkecosystem/core-state": "^3.0.0-next.0",
-        "@arkecosystem/core-transactions": "^3.0.0-next.0",
-        "@arkecosystem/crypto": "^3.0.0-next.0"
+        "@arkecosystem/core-database": "^3.0.0-next",
+        "@arkecosystem/core-kernel": "^3.0.0-next",
+        "@arkecosystem/core-state": "^3.0.0-next",
+        "@arkecosystem/core-transactions": "^3.0.0-next",
+        "@arkecosystem/crypto": "^3.0.0-next"
     },
     "devDependencies": {
+        "@arkecosystem/core-test-framework": "^3.0.0-next",
         "@sindresorhus/tsconfig": "^0.4.0",
         "@types/jest": "^24.0.15",
         "@types/node": "^12.6.2",
+        "cross-env": "^5.2.0",
+        "del-cli": "^2.0.0",
+        "jest": "~26.6.3",
+        "jest-extended": "~0.11.5",
+        "npm-check-updates": "^3.1.0",
+        "regenerator-runtime": "^0.11.1",
+        "ts-jest": "~26.5.0",
         "tslint": "^5.12.0",
         "tslint-config-prettier": "^1.17.0",
-        "typescript": "^3.2.4",
         "typedoc": "^0.13.0",
-        "ts-jest": "^24.0.2",
-        "jest": "^24.8.0",
-        "jest-extended": "^0.11.2",
-        "regenerator-runtime": "^0.11.1",
-        "npm-check-updates": "^3.1.0",
-        "cross-env": "^5.2.0",
-        "del-cli": "^2.0.0"
+        "typescript": "^3.2.4"
     },
     "jest": {
         "testEnvironment": "node",
@@ -70,18 +71,6 @@
             "node"
         ],
         "collectCoverage": false,
-        "coverageDirectory": "<rootDir>/.coverage",
-        "collectCoverageFrom": [
-            "packages/**/src/**/*.ts",
-            "!**/node_modules/**"
-        ],
-        "coverageReporters": [
-            "json",
-            "lcov",
-            "text",
-            "clover",
-            "html"
-        ],
         "watchman": false,
         "setupFilesAfterEnv": [
             "jest-extended"

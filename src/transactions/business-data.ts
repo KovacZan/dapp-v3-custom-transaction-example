@@ -1,8 +1,9 @@
-import { Transactions, Utils } from "@arkecosystem/crypto";
 import { Utils as AppUtils } from "@arkecosystem/core-kernel";
+import { Transactions, Utils } from "@arkecosystem/crypto";
+import ByteBuffer from "bytebuffer";
+
 import { BusinessDataStaticFee, BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
-import ByteBuffer from "bytebuffer";
 
 const { schemas } = Transactions;
 
