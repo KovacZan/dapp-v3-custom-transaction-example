@@ -1,7 +1,8 @@
-import { Transactions, Utils, Interfaces } from "@arkecosystem/crypto";
-import { BusinessDataTransaction } from "../transactions";
+import { Interfaces, Transactions, Utils } from "@arkecosystem/crypto";
+
 import { BusinessDataType, BusinessDataTypeGroup, TransactionVersion } from "../constants";
 import { IBusinessData } from "../interfaces";
+import { BusinessDataTransaction } from "../transactions";
 
 export class BusinessDataBuilder extends Transactions.TransactionBuilder<BusinessDataBuilder> {
     public constructor() {

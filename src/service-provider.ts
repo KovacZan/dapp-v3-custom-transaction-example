@@ -1,4 +1,5 @@
 import { Container, Providers } from "@arkecosystem/core-kernel";
+
 import { BusinessDataHandler } from "./handlers";
 
 export class ServiceProvider extends Providers.ServiceProvider {
